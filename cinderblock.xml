@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+<block
+	name="Cinder-URG"
+	id="com.say-nono.cinder.urg"
+	git="git@github.com:saynono/CinderURG.git"
+	author="nono"
+	license="Apache 2.0, LGPL"
+	library="https://sourceforge.net/projects/urgnetwork/files/urg_library/"
+	url="https://say-nono.com/"
+	summary="Use URG for cinder."
+	>
+	<supports os="macosx" />
+	<copyExclude>samples</copyExclude>
+	<!-- <sourcePattern>lib/urg/src/*.c</sourcePattern> -->
+	<headerPattern>lib/urg/include/*.h</headerPattern>
+	<header>include/UrgController.h</header>
+	<source>src/UrgController.cpp</source>
+	<source>lib/urg/src/urg_ticks.c</source>
+	<source>lib/urg/src/urg_errno.c</source>
+	<source>lib/urg/src/urg_delay.c</source>
+	<source>lib/urg/src/urg_ctrl.c</source>
+	<source>lib/urg/src/serial_utils.c</source>
+	<source>lib/urg/src/serial_ctrl.c</source>
+	<source>lib/urg/src/scip_handler.c</source>
+	<source>lib/urg/src/ring_buffer.c</source>
+
+	<platform os="macosx">
+
+	</platform>
+</block>
+<template>templates/Basic GL/template.xml</template>
+</cinder>
