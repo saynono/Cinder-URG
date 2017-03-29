@@ -11,7 +11,7 @@ namespace nono {
     
     
     UrgController::UrgController():state(URG_NOTFOUND){
-        bThreadRunning = false;
+      bThreadRunning = false;
     }
     
     //--------------------------------------------------------------
@@ -20,6 +20,14 @@ namespace nono {
         kill();
     }
     
+    //--------------------------------------------------------------
+    
+    UrgControllerRef UrgController::create( string port ){
+        UrgControllerRef ref = std::make_shared<UrgController>();
+        ref->setup(port);
+        return ref;
+    }
+
     //--------------------------------------------------------------
     
     void UrgController::setup( string port ){
@@ -37,7 +45,13 @@ namespace nono {
     void UrgController::kill(){
         stop();
         urg_disconnect(&urg);
-        mFrames->cancel();
+        bThreadRunning = false;
+      
+        if( mFrames != nullptr ) mFrames->cancel();
+        if( mThread && mThread->joinable()){
+            mThread->join();
+            
+        }
         console() << "Ended the urg." << std::endl;
     }
     
@@ -51,12 +65,11 @@ namespace nono {
     
     bool UrgController::init() {
         
-        
+        mFrames = new ConcurrentCircularBuffer<URG_FrameRef>( 2 );
         if( checkError(urg_connect(&urg, mUrgPort.c_str(), 115200))){
             CI_LOG_E( "Error Urg: Could not open " << mUrgPort );
             return false;
         }
-        mFrames = new ConcurrentCircularBuffer<URG_FrameRef>( 2 );
         getSensorProperties();
         
         lock_guard<mutex> lock(mMutex);
@@ -78,8 +91,14 @@ namespace nono {
         mProperties.distanceMax = urg_maxDistance(&urg);
         mProperties.distanceMin = urg_minDistance(&urg);
         
-        //urg_(&urg, &minDistance, &maxDistance);
-        console() << "Notice Urg: Data Size: " << dataSize;
+        urg_parameter_t parameters;
+        urg_parameters(&urg, &parameters);
+        mProperties.rpm = parameters.scan_rpm_;
+        
+        mProperties.areaMin = parameters.area_min_;
+        mProperties.areaMax = parameters.area_max_;
+        mProperties.areaTotal = parameters.area_total_;
+        mProperties.areaFront = parameters.area_front_;        
     }
     
     //--------------------------------------------------------------
@@ -114,16 +133,16 @@ namespace nono {
                     
                     if(numSteps == 0){
                         continue;
-                    }
-                    
+                    }                    
                     for(size_t i=0; i<numSteps; i++){
-                        frameCurrent->points[i].degrees = urg_index2deg(&urg, i*urg.skip_lines_);
+//                        frameCurrent->points[i].degrees = urg_index2deg(&urg, i*urg.skip_lines_);
+                        frameCurrent->points[i].index = i;
                         frameCurrent->points[i].radians = urg_index2rad(&urg, i*urg.skip_lines_);
                         frameCurrent->points[i].distance = dataRaw[i];
-//                        if( dataRaw[i] < 10 ) console() << i << "/" << numSteps << " deg: " << frameCurrent->points[i].degrees << "    d : " << dataRaw[i] << std::endl;
                     }
+//                console() << " URG Frames :" << mFrames->getSize() << std::endl;
                     mFrames->popBack(&mFrameCurrent);
-                    onData();
+                    if( bThreadRunning ) onData.emit( mFrameCurrent );
             }
             cinder::sleep(10);
         }
@@ -134,7 +153,7 @@ namespace nono {
     void UrgController::start(){
         
         if(!bThreadRunning){
-            console() << "URG::start thread " << std::endl;
+//            console() << "URG::start thread " << std::endl;
             bool err = checkError(urg_laserOn(&urg));
             if( err ) return;
             bThreadRunning = true;
@@ -167,6 +186,16 @@ namespace nono {
     
     UrgController::URG_FrameRef UrgController::getCurrentFrame(){
         return mFrameCurrent;
+    }
+    
+    //--------------------------------------------------------------
+    
+    UrgController::URG_Properties UrgController::getProperties(){
+        return mProperties;
+    }
+    
+    urg_t* UrgController::getUrgRef(){
+        return &urg;
     }
     
     //--------------------------------------------------------------

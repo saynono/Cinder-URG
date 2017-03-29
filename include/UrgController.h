@@ -15,8 +15,6 @@
 #include "cinder/ConcurrentCircularBuffer.h"
 #include "cinder/Log.h"
 
-#include <boost/signals2.hpp>
-
 extern "C"{
 #include "urg_ctrl.h"
 }
@@ -28,13 +26,22 @@ using namespace std;
 
 namespace nono {
     
-    class UrgController: public Event {
+typedef std::shared_ptr<class UrgController> UrgControllerRef;
+
+    
+class UrgController: public cinder::app::Event {
+
 
 public:
       
     struct URG_Properties{
         long distanceMin;
         long distanceMax;
+        int rpm;
+        int areaMax;
+        int areaMin;
+        int areaTotal;
+        int areaFront;
     };
 
     struct URG_Point{
@@ -50,7 +57,8 @@ public:
 //            distance = long( length(p) );
 //        }
         
-        double degrees;
+//        double degrees;
+        int index;
         double radians;
         long distance;
     };
@@ -64,6 +72,8 @@ public:
         
     using URG_FrameRef = shared_ptr<URG_Frame>;
     
+
+    static UrgControllerRef create( string port );
 	
     UrgController();
     ~UrgController();
@@ -77,8 +87,10 @@ public:
     bool isFound();
         
     URG_FrameRef getCurrentFrame();
+    URG_Properties getProperties();
+    urg_t* getUrgRef();
     
-    boost::signals2::signal<void(void)> onData;
+    signals::Signal<void(UrgController::URG_FrameRef&)> onData;
 
     
 private:
@@ -107,7 +119,7 @@ private:
         
     ConcurrentCircularBuffer< URG_FrameRef >	*mFrames;
     URG_FrameRef mFrameCurrent;
-        
+    
 	mutable std::mutex mMutex;
 	std::shared_ptr<std::thread> mThread;
     std::vector<long> dataRaw;

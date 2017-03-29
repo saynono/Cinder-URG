@@ -3,9 +3,9 @@
 <block
 	name="Cinder-URG"
 	id="com.say-nono.cinder.urg"
-	git="git@github.com:saynono/CinderURG.git"
-	author="nono"
-	license="Apache 2.0, LGPL"
+	git="git@github.com:saynono/Cinder-URG.git"
+	author="Vincent Rebers"
+	license="Modified BSD License"
 	library="https://sourceforge.net/projects/urgnetwork/files/urg_library/"
 	url="https://say-nono.com/"
 	summary="Use URG for cinder."

@@ -29,6 +29,7 @@
 		FF41D6191DD603EE00622340 /* urg_errno.c in Sources */ = {isa = PBXBuildFile; fileRef = FF41D5A91DD603EE00622340 /* urg_errno.c */; };
 		FF41D61A1DD603EE00622340 /* urg_ticks.c in Sources */ = {isa = PBXBuildFile; fileRef = FF41D5AA1DD603EE00622340 /* urg_ticks.c */; };
 		FF41D66A1DD6066C00622340 /* UrgController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FF41D6691DD6066C00622340 /* UrgController.cpp */; };
+		FFA697311E8B1B1300917348 /* UrgEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FFA697301E8B1B1300917348 /* UrgEvents.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +78,8 @@
 		FF41D5AA1DD603EE00622340 /* urg_ticks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = urg_ticks.c; sourceTree = "<group>"; };
 		FF41D6691DD6066C00622340 /* UrgController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UrgController.cpp; sourceTree = "<group>"; };
 		FF41D66B1DD6067300622340 /* UrgController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UrgController.h; sourceTree = "<group>"; };
+		FFA6972F1E8B1B0800917348 /* UrgEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UrgEvents.h; sourceTree = "<group>"; };
+		FFA697301E8B1B1300917348 /* UrgEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UrgEvents.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +264,7 @@
 		FF41D6521DD6048900622340 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				FFA6972F1E8B1B0800917348 /* UrgEvents.h */,
 				FF41D66B1DD6067300622340 /* UrgController.h */,
 			);
 			path = include;
@@ -270,6 +274,7 @@
 			isa = PBXGroup;
 			children = (
 				FF41D6691DD6066C00622340 /* UrgController.cpp */,
+				FFA697301E8B1B1300917348 /* UrgEvents.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -337,6 +342,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FFA697311E8B1B1300917348 /* UrgEvents.cpp in Sources */,
 				FF41D66A1DD6066C00622340 /* UrgController.cpp in Sources */,
 				32BB3B40B86742AF91304773 /* ExampleApp.cpp in Sources */,
 				FF41D6161DD603EE00622340 /* serial_utils.c in Sources */,
